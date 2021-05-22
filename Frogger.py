@@ -123,6 +123,7 @@ class Game:
                         my_frog.y -= 32
                     elif event.key == pygame.K_DOWN:
                         my_frog.y += 32
+             
             self.display.fill((0, 0, 0))
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 416 - 32, 416, 32)))
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 32, 416, 32)))
