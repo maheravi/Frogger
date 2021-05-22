@@ -147,11 +147,12 @@ class Game:
             if my_frog.y < 6 * game.grid:
                 if not any(wood.intersects(my_frog) for wood in woods):
                     my_frog.reset()
-                if any(wood.intersects(my_frog) for wood in woods):
-                    if wood.direction == 'ltr':
-                        my_frog.x -= wood.speed
-                    elif wood.direction == 'rtl':
-                        my_frog.x += wood.speed
+                for wood in woods:
+                    if wood.intersects(my_frog):
+                        if wood.direction == 'ltr':
+                            my_frog.x += wood.speed
+                        elif wood.direction == 'rtl':
+                            my_frog.x -= wood.speed
 
             font = pygame.font.SysFont('comicsansms', 16)
             score_font = font.render("Score: " + str(my_frog.score), True, (255, 0, 0))
