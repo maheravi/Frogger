@@ -125,8 +125,6 @@ class Game:
             self.lanes.append(pygame.draw.rect(self.display, (195, 195, 195), pygame.Rect(0, 256, 416, 128)))
             self.lanes.append(pygame.draw.rect(self.display, (153, 217, 234), pygame.Rect(0, 64, 416, 128)))
 
-            my_frog.show()
-
             if random.random() < 0.04:
                 cars.append(Car())
 
@@ -140,6 +138,8 @@ class Game:
             for wood in woods:
                 wood.show()
                 wood.move()
+                
+            my_frog.show()
 
             if any(car.intersects(my_frog) for car in cars):
                 my_frog.score = 0
