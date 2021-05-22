@@ -106,6 +106,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.fps = 30
         self.lanes = []
+        pygame.display.set_caption('Frogger')
 
     def play(self):
         pygame.mouse.set_visible(False)
@@ -123,7 +124,7 @@ class Game:
                         my_frog.y -= 32
                     elif event.key == pygame.K_DOWN:
                         my_frog.y += 32
-             
+            
             self.display.fill((0, 0, 0))
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 416 - 32, 416, 32)))
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 32, 416, 32)))
