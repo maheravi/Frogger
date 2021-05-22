@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 pygame.init()
 
@@ -50,7 +51,6 @@ class Car(Object):
             self.no = random.choice([9, 11])
             self.image = pygame.transform.scale(pygame.image.load('Car1.png'), (self.w, self.h))
             self.y = self.no * game.grid
-            # self.rect = self.image.get_rect()
 
 
 class Wood(Object):
@@ -89,6 +89,12 @@ class Frog:
         self.x = 6 * game.grid
         self.y = game.height - 32
         self.lives -= 1
+
+    def new(self):
+        self.x = 6 * game.grid
+        self.y = game.height - 32
+        self.lives = 5
+        self.score = 0
 
 
 class Game:
@@ -138,13 +144,13 @@ class Game:
             for wood in woods:
                 wood.show()
                 wood.move()
-                
+
             my_frog.show()
 
             if any(car.intersects(my_frog) for car in cars):
                 my_frog.score = 0
                 my_frog.reset()
-            if my_frog.y < 6 * game.grid:
+            if game.grid < my_frog.y < 6 * game.grid:
                 if not any(wood.intersects(my_frog) for wood in woods):
                     my_frog.reset()
                 for wood in woods:
@@ -154,13 +160,21 @@ class Game:
                         elif wood.direction == 'rtl':
                             my_frog.x -= wood.speed
 
-            font = pygame.font.SysFont('comicsansms', 16)
-            score_font = font.render("Score: " + str(my_frog.score), True, (255, 0, 0))
-            font_pos = score_font.get_rect(center=(game.width/4, 16))
-            self.display.blit(score_font, font_pos)
+            if my_frog.y <= game.grid:
+                font = pygame.font.SysFont('comicsansms', 16)
+                score_font = font.render("Great! You win", True, (255, 0, 0))
+                font_pos = score_font.get_rect(center=(game.width / 2, 16))
+                self.display.blit(score_font, font_pos)
+                pygame.display.update()
+                time.sleep(4)
+                my_frog.new()
+
+            if 0 > my_frog.x or my_frog.x > game.width:
+                my_frog.reset()
+
             font = pygame.font.SysFont('comicsansms', 16)
             score_font = font.render("Lives: " + str(my_frog.lives), True, (255, 0, 0))
-            font_pos = score_font.get_rect(center=(game.width * 0.75, 16))
+            font_pos = score_font.get_rect(center=(game.width * 0.5, 16))
             self.display.blit(score_font, font_pos)
 
             pygame.display.update()
