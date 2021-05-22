@@ -1,3 +1,3 @@
 # Frogger
 
-![Screenshot] https://github.com/maheravi/Frogger/blob/main/Capture.JPG
+![Alt text](https://github.com/maheravi/Frogger/blob/main/Capture.JPG "Optional title")
