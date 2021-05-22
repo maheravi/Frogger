@@ -173,6 +173,15 @@ class Game:
 
             if 0 > my_frog.x or my_frog.x > game.width:
                 my_frog.reset()
+                
+            if my_frog.lives == 0:
+                font = pygame.font.SysFont('comicsansms', 20)
+                score_font = font.render("Game Over", True, (255, 0, 0))
+                font_pos = score_font.get_rect(center=(game.width * 0.5, 16))
+                self.display.blit(score_font, font_pos)
+                pygame.display.update()
+                time.sleep(4)
+                my_frog.new()
 
             font = pygame.font.SysFont('comicsansms', 16)
             score_font = font.render("Lives: " + str(my_frog.lives), True, (255, 0, 0))
