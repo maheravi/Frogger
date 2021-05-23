@@ -78,7 +78,7 @@ class Frog:
         self.h = 32
         self.image = pygame.image.load('Frog.png')
         self.score = 0
-        self.lives = 5
+        self.remaining = 5
         self.gu = pygame.transform.scale(self.image, (self.w, self.h))
         self.rect = self.gu.get_rect()
 
@@ -88,12 +88,12 @@ class Frog:
     def reset(self):
         self.x = 6 * game.grid
         self.y = game.height - 32
-        self.lives -= 1
+        self.remaining -= 1
 
     def new(self):
         self.x = 6 * game.grid
         self.y = game.height - 32
-        self.lives = 5
+        self.remaining = 5
         self.score = 0
 
 
@@ -110,10 +110,11 @@ class Game:
 
     def play(self):
         pygame.mouse.set_visible(False)
-
+        font = pygame.font.SysFont('comicsansms', 16)
         my_frog = Frog()
         cars = []
         woods = []
+        received_frogs = []
 
         while True:
             for event in pygame.event.get():
@@ -124,7 +125,7 @@ class Game:
                         my_frog.y -= 32
                     elif event.key == pygame.K_DOWN:
                         my_frog.y += 32
-            
+
             self.display.fill((0, 0, 0))
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 416 - 32, 416, 32)))
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 32, 416, 32)))
@@ -132,6 +133,9 @@ class Game:
             self.lanes.append(pygame.draw.rect(self.display, (50, 192, 122), pygame.Rect(0, 192, 416, 32)))
             self.lanes.append(pygame.draw.rect(self.display, (195, 195, 195), pygame.Rect(0, 256, 416, 128)))
             self.lanes.append(pygame.draw.rect(self.display, (153, 217, 234), pygame.Rect(0, 64, 416, 128)))
+
+            for frog in received_frogs:
+                frog.show()
 
             if random.random() < 0.04:
                 cars.append(Car())
@@ -162,29 +166,35 @@ class Game:
                         elif wood.direction == 'rtl':
                             my_frog.x -= wood.speed
 
+            if 0 > my_frog.x or my_frog.x > game.width:
+                my_frog.reset()
+
+            if my_frog.remaining == 0:
+                if len(received_frogs) == 5:
+                    score_font = font.render("Completed!", True, (255, 0, 0))
+                    font_pos = score_font.get_rect(center=(game.width * 0.5, 16))
+                    self.display.blit(score_font, font_pos)
+                    pygame.display.update()
+                    time.sleep(4)
+                    my_frog.new()
+                elif len(received_frogs) < 5:
+                    score_font = font.render("You lose", True, (255, 0, 0))
+                    font_pos = score_font.get_rect(center=(game.width * 0.5, 16))
+                    self.display.blit(score_font, font_pos)
+                    pygame.display.update()
+                    time.sleep(4)
+                    my_frog.new()
+
             if my_frog.y <= game.grid:
-                font = pygame.font.SysFont('comicsansms', 16)
-                score_font = font.render("Great! You win", True, (255, 0, 0))
+                received_frogs.append(my_frog)
+                score_font = font.render("Great!", True, (255, 0, 0))
                 font_pos = score_font.get_rect(center=(game.width / 2, 16))
                 self.display.blit(score_font, font_pos)
                 pygame.display.update()
                 time.sleep(4)
-                my_frog.new()
-
-            if 0 > my_frog.x or my_frog.x > game.width:
                 my_frog.reset()
-                
-            if my_frog.lives == 0:
-                font = pygame.font.SysFont('comicsansms', 20)
-                score_font = font.render("Game Over", True, (255, 0, 0))
-                font_pos = score_font.get_rect(center=(game.width * 0.5, 16))
-                self.display.blit(score_font, font_pos)
-                pygame.display.update()
-                time.sleep(4)
-                my_frog.new()
 
-            font = pygame.font.SysFont('comicsansms', 16)
-            score_font = font.render("Lives: " + str(my_frog.lives), True, (255, 0, 0))
+            score_font = font.render("Remaining Frogs: " + str(my_frog.remaining), True, (255, 0, 0))
             font_pos = score_font.get_rect(center=(game.width * 0.5, 16))
             self.display.blit(score_font, font_pos)
 
